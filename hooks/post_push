@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ "$SOURCE_BRANCH" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]]; then
+
+  VERSION=${SOURCE_BRANCH:1}
+  MAJ=$(echo $VERSION | cut -d"." -f1)
+  MIN=$(echo $VERSION | cut -d"." -f2)
+
+  docker tag $IMAGE_NAME $DOCKER_REPO:$MAJ
+  docker tag $IMAGE_NAME $DOCKER_REPO:$MAJ.$MIN
+  docker push $DOCKER_REPO:$MAJ
+  docker push $DOCKER_REPO:$MAJ.$MIN
+fi
