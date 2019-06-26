@@ -22,3 +22,7 @@ RUN apk --no-cache add bash curl \
  && chmod +x /usr/local/bin/docker \
  && apk del curl \
  && rm -rf /tmp/*
+COPY backup-volume.sh /usr/local/bin/backup-volume
+COPY restore-volume.sh /usr/local/bin/restore-volume
+RUN chmod +x /usr/local/bin/backup-volume; \
+    chmod +x /usr/local/bin/restore-volume
