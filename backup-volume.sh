@@ -1,16 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 
 set -eu
 
+readonly INVALID_ARGS=1
+readonly STOP_FAILED=2
+readonly CREATE_FAILED=3
+readonly START_FAILED=4
+
 function usage {
   cat <<EOM
-usage: $(basename $0) [--container=<container_name>] <image_name>*
+usage: $(basename "$0") [--container=<container_name>] <image_name>*
   --container   specify container to stop during backup
 EOM
-  exit 1
+  exit $INVALID_ARGS
 }
 
-[ -z $1 ] && { usage; }
+[ $# -eq 0 ] && { usage; }
 
 container_name=
 
@@ -28,18 +33,24 @@ done
 if [ ! -z "$container_name" ]
 then
   echo "Stopping container '$container_name'..."
-  docker stop "$container_name" && echo "Stopped" || >&2 echo "Failed"
+  docker stop "$container_name" \
+    && echo "Stopped" \
+    || { >&2 echo "Failed"; exit $STOP_FAILED; }
+else
+  echo "No container will be stopped/started"
 fi
-
-cd /source
 
 for volume_name do
   echo "Backing up volume '$volume_name'..."
-  tar cfz "/target/$volume_name.tar.gz" "$volume_name" && echo "Done" || >&2 echo "Failed"
+  tar -czp -f "/target/$volume_name.tar.gz" -C "/source/$volume_name" . \
+    && echo "Done" \
+    || { >&2 echo "Failed"; exit $CREATE_FAILED; }
 done
 
-if [ ! -z $container_name ]
+if [ ! -z "$container_name" ]
 then
   echo "Starting container '$container_name'..."
-  docker start "$container_name" && echo "Started" || >&2 echo "Failed"
+  docker start "$container_name" \
+    && echo "Started" \
+    || { >&2 echo "Failed"; exit $START_FAILED; }
 fi
