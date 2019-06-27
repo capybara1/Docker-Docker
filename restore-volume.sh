@@ -25,7 +25,9 @@ for arg do
   value="${arg#--container=}"
   if [ "$value" != "$arg" ]
   then
-    container_name="$value"
+    docker ps --filter "name=$value" --format "{{.Names}}" | grep -qw "$value" \
+      && container_name="$value" \
+      || >&2 echo "WARNING: container with name '$value' is either not running or does not exist"
     continue
   fi
   set -- "$@" "$arg"
@@ -38,7 +40,7 @@ then
     && echo "Stopped" \
     || { >&2 echo "Failed"; exit $STOP_FAILED; }
 else
-  echo "No container will be stopped/started"
+  echo "No container to stop"
 fi
 
 for volume_name do
@@ -58,4 +60,6 @@ then
   docker start "$container_name" \
     && echo "Started" \
     || { >&2 echo "Failed"; exit $START_FAILED; }
+else
+  echo "No container to start"
 fi
