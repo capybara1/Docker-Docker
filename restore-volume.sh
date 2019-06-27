@@ -45,7 +45,7 @@ fi
 
 for volume_name do
   echo "Clearing volume '$volume_name'..."
-  rm -rf /target/$volume_name/* /target/$volume_name/..?* /target/$volume_name/.[!.]* \
+  rm -rf "/target/$volume_name"/* "/target/$volume_name"/..?* "/target/$volume_name"/.[!.]* \
     && echo "Done" \
     || { >&2 echo "Failed"; exit $CLEAR_FAILED; }
   echo "Restoring volume '$volume_name'..."
