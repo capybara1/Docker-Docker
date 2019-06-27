@@ -25,6 +25,8 @@ The volume backup/restore scripts are inspired by the following articles
 
 ### Command Line
 
+Arbitrary command
+
 ```sh
 docker run \
   --rm \
@@ -32,5 +34,35 @@ docker run \
   -it \
   -v /var/run/docker.sock:/var/run/docker.sock \
   capybara1/docker:1.0 \
+  my-command
+```
+
+Backup volume
+
+```sh
+docker run \
+  --rm \
+  --init \
+  -it \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v my_vol1:/source/my_vol1 \
+  -v my_vol2:/source/my_vol2 \
+  -v /backup:/target \
+  capybara1/docker:1.0 \
   /usr/local/bin/backup-volume --container=my_container my_vol1 my_vol2
+```
+
+Restore volume
+
+```sh
+docker run \
+  --rm \
+  --init \
+  -it \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /backup:/source \
+  -v my_vol1:/target/my_vol1 \
+  -v my_vol2:/target/my_vol2 \
+  capybara1/docker:1.0 \
+  /usr/local/bin/restore-volume --container=my_container my_vol1 my_vol2
 ```
