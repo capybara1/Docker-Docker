@@ -26,7 +26,7 @@ The volume backup/restore scripts are inspired by the following articles
 ### Command Line
 
 ```sh
-docker run 
+docker run \
   --rm \
   --init \
   -it \
