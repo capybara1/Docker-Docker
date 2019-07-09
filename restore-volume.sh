@@ -49,7 +49,7 @@ for volume_name do
     && echo "Done" \
     || { >&2 echo "Failed"; exit $CLEAR_FAILED; }
   echo "Restoring volume '$volume_name'..."
-  tar -xz --same-owner -f "/source/$volume_name.tar.gz" -C "/target/$volume_name" \
+  tar -xz -f "/source/$volume_name.tar.gz" -C "/target/$volume_name" \
     && echo "Done" \
     || { >&2 echo "Failed"; exit $EXTRACT_FAILED; }
 done
