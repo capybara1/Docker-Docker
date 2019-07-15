@@ -2,7 +2,8 @@
 
 set -eux
 
-if [[ "$SOURCE_BRANCH" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]]; then
+if [[ "$SOURCE_BRANCH" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]]
+then
 
   VERSION=${SOURCE_BRANCH:1}
   MAJ=$(echo $VERSION | cut -d"." -f1)
